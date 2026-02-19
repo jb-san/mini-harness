@@ -1,3 +1,4 @@
+import { appendFileSync, readFileSync } from "fs";
 const LLM_BASE_URL = "http://localhost:1234/v1";
 
 const routes = {
@@ -24,6 +25,26 @@ const tools = [
       required: ["location"],
     },
   },
+  {
+    type: "function",
+    name: "save_fact",
+    description: "remember a fact and save it to disk ",
+    parameters: {
+      type: "object",
+      properties: {
+        fact: {
+          type: "string",
+          description: "a fact 'eg the capital of france is paris'",
+        },
+      },
+      required: ["fact"],
+    },
+  },
+  {
+    type: "function",
+    name: "load_facts",
+    description: "retrive a fact from memory",
+  },
 ];
 
 // --- Tool implementations ---
@@ -36,6 +57,12 @@ function executeTool(name: string, args: Record<string, unknown>): string {
         temperature: "72°F",
         condition: "sunny",
       });
+    case "save_fact":
+      appendFileSync("memory.txt", args.fact + "\n");
+      return JSON.stringify({ success: true });
+    case "load_facts":
+      const facts = readFileSync("memory.txt", "utf8").split("\n");
+      return JSON.stringify({ facts });
     default:
       return JSON.stringify({ error: `Unknown tool: ${name}` });
   }
@@ -116,9 +143,23 @@ async function streamResponse(body: Record<string, unknown>): Promise<{
 
 // --- Main loop ---
 
+const systemPrompt = `You have a persistent memory stored on disk from previous sessions.
+
+Rules:
+1. BEFORE answering ANY question, call load_facts first.
+2. If load_facts returns a fact that answers the question, reply with ONLY that fact. Do not elaborate, rephrase, or add anything.
+3. If no relevant fact is found, answer normally.
+4. When the user tells you something worth remembering, save it with save_fact.`;
+
+let lastResponseId: string | null = null;
+
 async function run(prompt: string) {
   let body: Record<string, unknown> = {
-    input: prompt,
+    input: [
+      ...(lastResponseId ? [] : [{ role: "system", content: systemPrompt }]),
+      { role: "user", content: prompt },
+    ],
+    ...(lastResponseId ? { previous_response_id: lastResponseId } : {}),
     model: "zai-org/glm-4.7-flash",
     stream: true,
     tools,
@@ -126,6 +167,7 @@ async function run(prompt: string) {
 
   while (true) {
     const { toolCalls, responseId } = await streamResponse(body);
+    lastResponseId = responseId;
 
     if (toolCalls.length === 0) break;
 
@@ -145,7 +187,7 @@ async function run(prompt: string) {
 
     // Continue the conversation with tool results
     body = {
-      previous_response_id: responseId,
+      previous_response_id: lastResponseId,
       input: toolResults,
       model: "zai-org/glm-4.7-flash",
       stream: true,
@@ -156,6 +198,18 @@ async function run(prompt: string) {
   console.log();
 }
 
-await run("What's the weather like in San Francisco?");
+const prompt = (question: string): Promise<string> => {
+  process.stdout.write(question);
+  return new Promise((resolve) => {
+    process.stdin.once("data", (data) => resolve(data.toString().trim()));
+  });
+};
+
+console.log("Type a message (ctrl+c to quit)\n");
+while (true) {
+  const input = await prompt("> ");
+  if (!input) continue;
+  await run(input);
+}
 
 export {};
