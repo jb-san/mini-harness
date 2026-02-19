@@ -3,58 +3,110 @@ import { systemPrompt } from "./prompts/system";
 import { streamResponse } from "./stream";
 
 const LLM_BASE_URL = "http://localhost:1234/v1";
-const RESPONSES_URL = `${LLM_BASE_URL}/responses`;
+const CHAT_URL = `${LLM_BASE_URL}/chat/completions`;
 
 // --- Main loop ---
 
-let lastResponseId: string | null = null;
+type Message =
+  | { role: "system" | "user"; content: string }
+  | { role: "assistant"; content: string | null; tool_calls?: ChatToolCall[] }
+  | { role: "tool"; tool_call_id: string; content: string };
+
+interface ChatToolCall {
+  id: string;
+  type: "function";
+  function: { name: string; arguments: string };
+}
 
 async function run(prompt: string) {
-  let body: Record<string, unknown> = {
-    input: [
-      ...(lastResponseId ? [] : [{ role: "system", content: systemPrompt }]),
-      { role: "user", content: prompt },
-    ],
-    ...(lastResponseId ? { previous_response_id: lastResponseId } : {}),
-    model: "zai-org/glm-4.7-flash",
-    stream: true,
-    tools: toolDefinitions,
-  };
+  const messages: Message[] = [
+    { role: "system", content: systemPrompt },
+    { role: "user", content: prompt },
+  ];
 
+  const MAX_ITERATIONS = 20;
+  let iteration = 0;
   while (true) {
-    const { toolCalls, responseId } = await streamResponse(RESPONSES_URL, body);
-    lastResponseId = responseId;
+    iteration++;
+    if (iteration > MAX_ITERATIONS) {
+      console.log(`\n[loop] max iterations (${MAX_ITERATIONS}) reached, stopping`);
+      break;
+    }
+    console.log(`\n[loop] === iteration ${iteration} ===`);
 
-    if (toolCalls.length === 0) break;
-
-    const toolResults = await Promise.all(
-      toolCalls.map(async (tc) => {
-        let args: Record<string, unknown> = {};
-        try {
-          args = JSON.parse(tc.arguments || "{}");
-        } catch {
-          console.log(
-            `\n[tool] ${tc.name} — failed to parse args: ${tc.arguments}`,
-          );
-        }
-        console.log(`\n[tool] ${tc.name}(${JSON.stringify(args)})`);
-        const result = await executeTool(tc.name, args);
-        console.log(`[tool] -> ${result.slice(0, 200)}`);
-        return {
-          type: "function_call_output",
-          call_id: tc.id,
-          output: result,
-        };
-      }),
-    );
-
-    body = {
-      previous_response_id: lastResponseId,
-      input: toolResults,
+    const body = {
+      messages,
       model: "zai-org/glm-4.7-flash",
       stream: true,
-      tools: toolDefinitions,
+      max_tokens: 4096,
+      tools: toolDefinitions.map((t) => ({
+        type: "function" as const,
+        function: {
+          name: t.name,
+          description: t.description,
+          parameters: t.parameters,
+        },
+      })),
     };
+
+    let toolCalls: Awaited<ReturnType<typeof streamResponse>>["toolCalls"];
+    let assistantText: string;
+    try {
+      ({ toolCalls, assistantText } = await streamResponse(CHAT_URL, body));
+    } catch (err) {
+      console.error(`\n[error] ${err}`);
+      break;
+    }
+
+    // Add assistant message to history
+    if (toolCalls.length > 0) {
+      messages.push({
+        role: "assistant",
+        content: assistantText || null,
+        tool_calls: toolCalls.map((tc) => ({
+          id: tc.id,
+          type: "function",
+          function: { name: tc.name, arguments: tc.arguments },
+        })),
+      });
+    } else {
+      if (assistantText) {
+        messages.push({ role: "assistant", content: assistantText });
+      }
+      console.log(`[loop] no tool calls, breaking`);
+      break;
+    }
+
+    // Execute tools and add results to history
+    for (const tc of toolCalls) {
+      let args: Record<string, unknown> = {};
+      try {
+        args = JSON.parse(tc.arguments || "{}");
+      } catch {
+        console.log(`\n[tool] ${tc.name} — failed to parse args: ${tc.arguments}`);
+        messages.push({
+          role: "tool",
+          tool_call_id: tc.id,
+          content: JSON.stringify({ error: `Failed to parse arguments: ${tc.arguments}` }),
+        });
+        continue;
+      }
+      console.log(`\n[tool] ${tc.name}(${JSON.stringify(args)})`);
+      let result: string;
+      try {
+        result = await executeTool(tc.name, args);
+      } catch (err) {
+        result = JSON.stringify({ error: String(err) });
+      }
+      console.log(`[tool] -> ${result.slice(0, 200)}`);
+      messages.push({
+        role: "tool",
+        tool_call_id: tc.id,
+        content: result,
+      });
+    }
+
+    console.log(`\n[loop] sending tool results back (${toolCalls.length} results)`);
   }
 
   console.log();

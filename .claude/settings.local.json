@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bun build:*)"
+      "Bash(bun build:*)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:community.openai.com)"
     ]
   }
 }
