@@ -2,5 +2,7 @@
 Experiment with creating a harness for llms.
 
 ## Concepts I want to learn.
-- [] handle raw interactions with local llms
-- [] tool calling.
+- [x] handle raw interactions with local llms
+- [x] tool calling.
+- [] memory management.
+- [] context management.
