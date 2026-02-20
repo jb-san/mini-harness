@@ -76,6 +76,7 @@ npm start
 
 - [x] handle raw interactions with local llms
 - [x] tool calling
-- [x] memory management
-- [] context management
-- [] task system
+- [ ] memory management
+- [ ] context management
+- [ ] task system
+- [ ] agent orchistration
