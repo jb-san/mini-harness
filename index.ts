@@ -1,10 +1,11 @@
 import { createUI } from "./ui";
-import { run } from "./core";
+import { createSession } from "./core";
 
 const { callbacks, waitForInput } = await createUI();
+const session = createSession();
 
 while (true) {
   const input = await waitForInput();
   if (!input) continue;
-  await run(input, callbacks);
+  await session.run(input, callbacks);
 }

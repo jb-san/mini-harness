@@ -15,6 +15,10 @@ type UIState = {
   thinkingText: string;
   thinkingActive: boolean;
   chatLog: ChatEntry[];
+  model: string;
+  tokensUsed: number;
+  maxTokens: number;
+  streaming: boolean;
 };
 
 type Listener = () => void;
@@ -60,6 +64,28 @@ function ThinkingBox({ text, active }: { text: string; active: boolean }) {
         wrapMode="word"
         truncate={true}
       />
+    </box>
+  );
+}
+
+function TopBar({ model, tokensUsed, maxTokens, streaming }: { model: string; tokensUsed: number; maxTokens: number; streaming: boolean }) {
+  const pct = maxTokens > 0 ? Math.min(100, Math.round((tokensUsed / maxTokens) * 100)) : 0;
+  const barWidth = 20;
+  const filled = Math.round((pct / 100) * barWidth);
+  const bar = "█".repeat(filled) + "░".repeat(barWidth - filled);
+  const barColor = pct < 50 ? "#555555" : pct < 80 ? "#997700" : "#cc4444";
+
+  const modelShort = model.includes("/") ? model.split("/").pop()! : model;
+  const status = streaming ? "●" : "○";
+  const statusColor = streaming ? "#44aa44" : "#555555";
+
+  return (
+    <box width="100%" height={1} flexDirection="row">
+      <text content={` ${status} `} fg={statusColor} />
+      <text content={`${modelShort} `} fg="#888888" />
+      <box flexGrow={1} />
+      <text content={bar} fg={barColor} />
+      <text content={` ${pct}% `} fg="#666666" />
     </box>
   );
 }
@@ -141,6 +167,7 @@ function App({
 
   return (
     <box width="100%" height="100%" flexDirection="column">
+      <TopBar model={state.model} tokensUsed={state.tokensUsed} maxTokens={state.maxTokens} streaming={state.streaming} />
       <ThinkingBox text={state.thinkingText} active={state.thinkingActive} />
 
       <scrollbox
@@ -195,6 +222,10 @@ export async function createUI() {
     thinkingText: "",
     thinkingActive: false,
     chatLog: [],
+    model: "",
+    tokensUsed: 0,
+    maxTokens: 0,
+    streaming: false,
   });
 
   let reasoningBuffer = "";
@@ -246,6 +277,7 @@ export async function createUI() {
     onIterationStart(_iteration: number) {
       reasoningBuffer = "";
       currentAssistantKey = null;
+      store.setState({ streaming: true });
     },
 
     onReasoningChunk(chunk: string) {
@@ -306,16 +338,25 @@ export async function createUI() {
 
     onAssistantDone(_text: string) {
       currentAssistantKey = null;
-      store.setState({ thinkingActive: false });
+      store.setState({ thinkingActive: false, streaming: false });
     },
 
     onError(error: string) {
+      store.setState({ streaming: false });
       appendToLog({
         type: "toolbox",
         key: nextKey("error"),
         name: "Error",
         detail: error,
         color: "#ff4444",
+      });
+    },
+
+    onContextUpdate(info: { model: string; tokensUsed: number; maxTokens: number }) {
+      store.setState({
+        model: info.model,
+        tokensUsed: info.tokensUsed,
+        maxTokens: info.maxTokens,
       });
     },
   };

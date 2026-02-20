@@ -5,7 +5,7 @@ import { debug } from "./ui/debug";
 
 const LLM_BASE_URL = "http://localhost:1234/v1";
 const CHAT_URL = `${LLM_BASE_URL}/chat/completions`;
-const MAX_ITERATIONS = 20;
+const MAX_ITERATIONS = 100;
 
 // --- Types ---
 
@@ -29,15 +29,35 @@ export interface UICallbacks {
   onToolError: (name: string, error: string) => void;
   onAssistantDone: (text: string) => void;
   onError: (error: string) => void;
+  onContextUpdate: (info: {
+    model: string;
+    tokensUsed: number;
+    maxTokens: number;
+  }) => void;
 }
 
 // --- Agent loop ---
 
-export async function run(prompt: string, ui: UICallbacks) {
-  const messages: Message[] = [
-    { role: "system", content: systemPrompt },
-    { role: "user", content: prompt },
-  ];
+const MODEL = "zai-org/glm-4.7-flash";
+const MAX_TOKENS = 202752;
+
+export function createSession() {
+  const messages: Message[] = [{ role: "system", content: systemPrompt }];
+
+  return {
+    messages,
+    async run(prompt: string, ui: UICallbacks) {
+      return runWithMessages(messages, prompt, ui);
+    },
+  };
+}
+
+async function runWithMessages(
+  messages: Message[],
+  prompt: string,
+  ui: UICallbacks,
+) {
+  messages.push({ role: "user", content: prompt });
 
   const chatTools = toolDefinitions.map((t) => ({
     type: "function" as const,
@@ -64,14 +84,16 @@ export async function run(prompt: string, ui: UICallbacks) {
 
     let toolCalls: Awaited<ReturnType<typeof streamResponse>>["toolCalls"];
     let assistantText: string;
+    let usage: Awaited<ReturnType<typeof streamResponse>>["usage"];
     try {
-      ({ toolCalls, assistantText } = await streamResponse(
+      ({ toolCalls, assistantText, usage } = await streamResponse(
         CHAT_URL,
         {
           messages,
-          model: "zai-org/glm-4.7-flash",
+          model: MODEL,
           stream: true,
-          max_tokens: 202752,
+          max_tokens: MAX_TOKENS,
+          stream_options: { include_usage: true },
           tools: chatTools,
         },
         streamCallbacks,
@@ -79,6 +101,14 @@ export async function run(prompt: string, ui: UICallbacks) {
     } catch (err) {
       ui.onError(String(err));
       break;
+    }
+
+    if (usage) {
+      ui.onContextUpdate({
+        model: MODEL,
+        tokensUsed: usage.total_tokens,
+        maxTokens: MAX_TOKENS,
+      });
     }
 
     // Add assistant message to history

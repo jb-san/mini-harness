@@ -6,9 +6,16 @@ export interface ToolCall {
   arguments: string;
 }
 
+export interface StreamUsage {
+  prompt_tokens: number;
+  completion_tokens: number;
+  total_tokens: number;
+}
+
 export interface StreamResult {
   toolCalls: ToolCall[];
   assistantText: string;
+  usage: StreamUsage | null;
 }
 
 export interface StreamCallbacks {
@@ -46,6 +53,7 @@ export async function streamResponse(
   let assistantText = "";
   let buffer = "";
   let inThinkBlock = true; // model may omit opening <think>, assume thinking until </think>
+  let usage: StreamUsage | null = null;
 
   const STREAM_TIMEOUT_MS = 300_000; // 5 minutes
 
@@ -69,6 +77,11 @@ export async function streamResponse(
         chunk = JSON.parse(line.slice(6));
       } catch {
         continue;
+      }
+
+      // Usage info comes in a final chunk with empty choices
+      if (chunk.usage) {
+        usage = chunk.usage;
       }
 
       const choice = chunk.choices?.[0];
@@ -147,8 +160,8 @@ export async function streamResponse(
     }
   }
 
-  const result = { toolCalls: [...toolCalls.values()], assistantText };
-  debug("stream done.", `toolCalls=${result.toolCalls.length}`);
+  const result = { toolCalls: [...toolCalls.values()], assistantText, usage };
+  debug("stream done.", `toolCalls=${result.toolCalls.length}`, usage ? `tokens=${usage.total_tokens}` : "no usage");
   if (result.toolCalls.length > 0) {
     debug("toolCalls:", JSON.stringify(result.toolCalls, null, 2));
   }

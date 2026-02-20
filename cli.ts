@@ -1,4 +1,4 @@
-import { run, type UICallbacks } from "./core";
+import { createSession, type UICallbacks } from "./core";
 
 const prompt = process.argv.slice(2).join(" ");
 if (!prompt) {
@@ -32,6 +32,8 @@ const callbacks: UICallbacks = {
   onError(error) {
     process.stderr.write(`[ERROR] ${error}\n`);
   },
+  onContextUpdate() {},
 };
 
-await run(prompt, callbacks);
+const session = createSession();
+await session.run(prompt, callbacks);

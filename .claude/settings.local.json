@@ -11,7 +11,8 @@
       "Bash(bun add:*)",
       "Bash(xargs:*)",
       "Bash(bunx tsc:*)",
-      "Bash(bun:*)"
+      "Bash(bun:*)",
+      "Bash(find:*)"
     ]
   }
 }
