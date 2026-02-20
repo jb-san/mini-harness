@@ -78,6 +78,6 @@ npm start
 - [x] tool calling
 - [ ] memory management
 - [ ] context management
-- [ ] task system
+- [x] task system
 - [ ] agent orchistration
 - [ ] security restrictions
