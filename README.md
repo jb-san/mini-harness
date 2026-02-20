@@ -80,3 +80,4 @@ npm start
 - [ ] context management
 - [ ] task system
 - [ ] agent orchistration
+- [ ] security restrictions
