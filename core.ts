@@ -1,4 +1,4 @@
-import { toolDefinitions, executeTool } from "./tools";
+import { getToolsForAgent } from "./tools";
 import { systemPrompt } from "./prompts/system";
 import { streamResponse, type StreamCallbacks } from "./stream";
 import { debug } from "./ui/debug";
@@ -36,18 +36,29 @@ export interface UICallbacks {
   }) => void;
 }
 
+export interface SessionOptions {
+  agentId?: string;
+  systemPrompt?: string;
+  isSubAgent?: boolean;
+}
+
 // --- Agent loop ---
 
 const MODEL = "zai-org/glm-4.7-flash";
 const MAX_TOKENS = 202752;
 
-export function createSession() {
-  const messages: Message[] = [{ role: "system", content: systemPrompt }];
+export function createSession(options?: SessionOptions) {
+  const agentId = options?.agentId ?? "main";
+  const sysPrompt = options?.systemPrompt ?? systemPrompt;
+  const isSubAgent = options?.isSubAgent ?? false;
+
+  const agentTools = getToolsForAgent(agentId, isSubAgent);
+  const messages: Message[] = [{ role: "system", content: sysPrompt }];
 
   return {
     messages,
     async run(prompt: string, ui: UICallbacks) {
-      return runWithMessages(messages, prompt, ui);
+      return runWithMessages(messages, prompt, ui, agentTools);
     },
   };
 }
@@ -56,10 +67,11 @@ async function runWithMessages(
   messages: Message[],
   prompt: string,
   ui: UICallbacks,
+  agentTools: ReturnType<typeof getToolsForAgent>,
 ) {
   messages.push({ role: "user", content: prompt });
 
-  const chatTools = toolDefinitions.map((t) => ({
+  const chatTools = agentTools.definitions.map((t) => ({
     type: "function" as const,
     function: {
       name: t.name,
@@ -150,7 +162,7 @@ async function runWithMessages(
 
       let result: string;
       try {
-        result = await executeTool(tc.name, args);
+        result = await agentTools.execute(tc.name, args);
       } catch (err) {
         result = JSON.stringify({ error: String(err) });
         ui.onToolError(tc.name, String(err));

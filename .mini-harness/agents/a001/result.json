@@ -1,0 +1,9 @@
+{
+  "agent_id": "a001",
+  "status": "completed",
+  "final_response": "## Directory Structure Summary\n\n### Root Directory Files:\n- **agent.ts** - Main agent implementation\n- **cli.ts** - Command-line interface\n- **stream.ts** - Streaming functionality\n- **core.ts** - Core functionality\n- **index.ts** - Entry point\n- **package.json** - Node.js project configuration\n- **tsconfig.json** - TypeScript configuration\n- **bun.lock** - Bun package lock file\n- **README.md** - Project documentation\n- **CLAUDE.md** - Claude-specific documentation\n- **.gitignore** - Git ignore rules\n- **memory.txt** - Memory/log file\n\n### Directories:\n- **ui/** - User interface files (index.tsx, debug.ts)\n- **tools/** - Tool implementations (write_file.ts, read_file.ts, run_shell.ts, mq.ts, agents.ts, index.ts, tasks.ts, list_dir.ts)\n- **prompts/** - Prompt templates (sub_agent.ts, system.ts)\n- **.mini-harness/** - Testing harness with task management (tasks/, agents/)\n- **.claude/** - Claude configuration (settings.local.json)\n- **.cursor/** - Cursor editor configuration (rules/)\n- **node_modules/** - Node.js dependencies\n- **.git/** - Git repository\n\n### Task Management Structure:\n- **.mini-harness/tasks/** contains subdirectories for task statuses:\n  - **todo/** - Pending tasks\n  - **doing/** - In-progress tasks\n  - **done/** - Completed tasks\n\nThis appears to be a TypeScript-based project with a multi-agent system architecture, including tool implementations, UI components, and a testing harness for task management.",
+  "steps_count": 9,
+  "tokens_used": 2267,
+  "started_at": "2026-02-22T14:01:35.414Z",
+  "finished_at": "2026-02-22T14:02:53.421Z"
+}

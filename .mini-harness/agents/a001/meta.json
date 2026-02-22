@@ -1,0 +1,8 @@
+{
+  "id": "a001",
+  "prompt": "Research the current directory structure and list all files and directories. Provide a summary of what you find.",
+  "status": "completed",
+  "started_at": "2026-02-22T14:01:35.397Z",
+  "pid": 11160,
+  "finished_at": "2026-02-22T14:02:53.421Z"
+}

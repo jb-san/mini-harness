@@ -10,11 +10,17 @@ type ChatEntry =
   | { type: "assistant"; key: string; text: string }
   | { type: "toolbox"; key: string; name: string; detail: string; color: string };
 
+// --- Agents panel entry types ---
+type AgentPanelEntry =
+  | { type: "message"; key: string; from: string; to: string; body: string }
+  | { type: "status"; key: string; agentId: string; text: string };
+
 // --- Bridge: external callbacks -> React state ---
 type UIState = {
   thinkingText: string;
   thinkingActive: boolean;
   chatLog: ChatEntry[];
+  agentLog: AgentPanelEntry[];
   model: string;
   tokensUsed: number;
   maxTokens: number;
@@ -120,6 +126,74 @@ function ChatLogEntry({ entry }: { entry: ChatEntry }) {
   );
 }
 
+function AgentPanelEntry({ entry }: { entry: AgentPanelEntry }) {
+  if (entry.type === "status") {
+    return (
+      <box width="100%" marginTop={1}>
+        <text content={`  ${entry.text}`} fg="#666666" width="100%" wrapMode="word" />
+      </box>
+    );
+  }
+
+  // message
+  const isMain = entry.from === "main";
+  const labelColor = isMain ? "#55aaff" : "#cc88ff";
+  const arrow = entry.to === "broadcast" ? " -> all" : ` -> ${entry.to}`;
+
+  return (
+    <box width="100%" marginTop={1}>
+      <text
+        content={`${entry.from}${arrow}`}
+        fg={labelColor}
+        width="100%"
+      />
+      <text
+        content={entry.body}
+        fg="#cccccc"
+        width="100%"
+        wrapMode="word"
+      />
+    </box>
+  );
+}
+
+function AgentsPanel({ entries }: { entries: AgentPanelEntry[] }) {
+  if (entries.length === 0) {
+    return (
+      <box
+        width={36}
+        height="100%"
+        borderStyle="rounded"
+        border={true}
+        borderColor="#553399"
+        title=" Agents "
+        titleAlignment="left"
+      >
+        <text content="  No agent activity yet." fg="#555555" width="100%" marginTop={1} />
+      </box>
+    );
+  }
+
+  return (
+    <scrollbox
+      width={36}
+      height="100%"
+      borderStyle="rounded"
+      border={true}
+      borderColor="#553399"
+      title=" Agents "
+      titleAlignment="left"
+      scrollY={true}
+      stickyScroll={true}
+      stickyStart="bottom"
+    >
+      {entries.map((entry) => (
+        <AgentPanelEntry key={entry.key} entry={entry} />
+      ))}
+    </scrollbox>
+  );
+}
+
 function App({
   store,
   onSubmit,
@@ -166,45 +240,49 @@ function App({
   );
 
   return (
-    <box width="100%" height="100%" flexDirection="column">
-      <TopBar model={state.model} tokensUsed={state.tokensUsed} maxTokens={state.maxTokens} streaming={state.streaming} />
-      <ThinkingBox text={state.thinkingText} active={state.thinkingActive} />
+    <box width="100%" height="100%" flexDirection="row">
+      <AgentsPanel entries={state.agentLog} />
 
-      <scrollbox
-        width="100%"
-        flexGrow={1}
-        borderStyle="rounded"
-        border={true}
-        borderColor="#444444"
-        title=" Chat "
-        titleAlignment="left"
-        scrollY={true}
-        stickyScroll={true}
-        stickyStart="bottom"
-      >
-        {state.chatLog.map((entry) => (
-          <ChatLogEntry key={entry.key} entry={entry} />
-        ))}
-      </scrollbox>
+      <box flexGrow={1} height="100%" flexDirection="column">
+        <TopBar model={state.model} tokensUsed={state.tokensUsed} maxTokens={state.maxTokens} streaming={state.streaming} />
+        <ThinkingBox text={state.thinkingText} active={state.thinkingActive} />
 
-      <box
-        width="100%"
-        height={3}
-        borderStyle="rounded"
-        border={true}
-        borderColor="#666666"
-        title=" > "
-        titleAlignment="left"
-      >
-        <input
-          ref={inputRef}
+        <scrollbox
           width="100%"
-          placeholder="Type a message..."
-          textColor="#ffffff"
-          focusedTextColor="#ffffff"
-          focused={true}
-          onSubmit={handleSubmit as any}
-        />
+          flexGrow={1}
+          borderStyle="rounded"
+          border={true}
+          borderColor="#444444"
+          title=" Chat "
+          titleAlignment="left"
+          scrollY={true}
+          stickyScroll={true}
+          stickyStart="bottom"
+        >
+          {state.chatLog.map((entry) => (
+            <ChatLogEntry key={entry.key} entry={entry} />
+          ))}
+        </scrollbox>
+
+        <box
+          width="100%"
+          height={3}
+          borderStyle="rounded"
+          border={true}
+          borderColor="#666666"
+          title=" > "
+          titleAlignment="left"
+        >
+          <input
+            ref={inputRef}
+            width="100%"
+            placeholder="Type a message..."
+            textColor="#ffffff"
+            focusedTextColor="#ffffff"
+            focused={true}
+            onSubmit={handleSubmit as any}
+          />
+        </box>
       </box>
     </box>
   );
@@ -222,6 +300,7 @@ export async function createUI() {
     thinkingText: "",
     thinkingActive: false,
     chatLog: [],
+    agentLog: [],
     model: "",
     tokensUsed: 0,
     maxTokens: 0,
@@ -361,6 +440,33 @@ export async function createUI() {
     },
   };
 
+  // --- Agents panel API ---
+  // Track message IDs we've already shown to avoid duplicates
+  const seenMessageIds = new Set<string>();
+
+  function addAgentMessage(from: string, to: string, body: string, msgId?: string) {
+    if (msgId && seenMessageIds.has(msgId)) return;
+    if (msgId) seenMessageIds.add(msgId);
+
+    const agentLog = store.getState().agentLog;
+    store.setState({
+      agentLog: [
+        ...agentLog,
+        { type: "message", key: nextKey("amsg"), from, to, body },
+      ],
+    });
+  }
+
+  function addAgentStatus(agentId: string, text: string) {
+    const agentLog = store.getState().agentLog;
+    store.setState({
+      agentLog: [
+        ...agentLog,
+        { type: "status", key: nextKey("astat"), agentId, text },
+      ],
+    });
+  }
+
   // --- Input handling ---
   function waitForInput(): Promise<string> {
     return new Promise((resolve) => {
@@ -371,6 +477,8 @@ export async function createUI() {
   return {
     callbacks,
     waitForInput,
+    addAgentMessage,
+    addAgentStatus,
     destroy: () => {
       root.unmount();
       renderer.destroy();
