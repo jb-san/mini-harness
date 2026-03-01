@@ -32,6 +32,23 @@ export interface MqMessage {
   timestamp: string;
 }
 
+// Programmatic message send — used by agent lifecycle code, not just the LLM tool
+export async function sendMessage(
+  from: string,
+  to: string,
+  body: string,
+): Promise<void> {
+  const id = await nextMessageId();
+  const msg: MqMessage = {
+    id,
+    from,
+    to,
+    body,
+    timestamp: new Date().toISOString(),
+  };
+  await Bun.write(`${MQ_DIR}/${id}.json`, JSON.stringify(msg, null, 2));
+}
+
 export async function readMessages(
   forAgent: string,
   since?: string,

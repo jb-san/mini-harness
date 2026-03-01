@@ -1,0 +1,7 @@
+{
+  "id": "0002",
+  "from": "a006",
+  "to": "main",
+  "body": "No messages found in the message queue from Agent A. The queue is currently empty.",
+  "timestamp": "2026-02-22T14:21:19.459Z"
+}

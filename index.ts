@@ -6,14 +6,63 @@ import type { AgentMeta } from "./tools/agents";
 
 const AGENTS_DIR = ".mini-harness/agents";
 const HEARTBEAT_INTERVAL_MS = 30_000;
+const PANEL_POLL_MS = 2_000;
 
 const { callbacks, waitForInput, addAgentMessage, addAgentStatus } =
   await createUI();
 const session = createSession();
 
-// --- Heartbeat state ---
-let lastMqCheck = new Date().toISOString();
+// --- Panel poller state (fast, UI-only) ---
 let lastPanelMqCheck = new Date().toISOString();
+const panelAgentStatuses = new Map<string, string>();
+
+async function pollPanel() {
+  // Feed ALL new MQ messages to the agents panel
+  try {
+    const allMsgs = await readAllMessages(lastPanelMqCheck);
+    if (allMsgs.length > 0) {
+      lastPanelMqCheck = allMsgs[allMsgs.length - 1]!.timestamp;
+      for (const msg of allMsgs) {
+        addAgentMessage(msg.from, msg.to, msg.body, msg.id);
+      }
+    }
+  } catch {
+    // MQ dir may not exist yet
+  }
+
+  // Check agent status changes for the panel
+  try {
+    const dirs = await readdir(AGENTS_DIR);
+    for (const d of dirs) {
+      try {
+        const meta: AgentMeta = await Bun.file(
+          `${AGENTS_DIR}/${d}/meta.json`,
+        ).json();
+        const prev = panelAgentStatuses.get(meta.id);
+        if (prev && prev !== meta.status) {
+          addAgentStatus(meta.id, `${meta.id} ${prev} -> ${meta.status}`);
+        } else if (!prev) {
+          const promptPreview = meta.prompt.slice(0, 60);
+          addAgentStatus(
+            meta.id,
+            `${meta.id} spawned: ${promptPreview}${meta.prompt.length > 60 ? "..." : ""}`,
+          );
+        }
+        panelAgentStatuses.set(meta.id, meta.status);
+      } catch {
+        // skip malformed
+      }
+    }
+  } catch {
+    // agents dir may not exist yet
+  }
+}
+
+// Background interval — updates the panel every 2s regardless of what the main loop is doing
+setInterval(pollPanel, PANEL_POLL_MS);
+
+// --- Heartbeat state (slower, feeds the agent loop) ---
+let lastMqCheck = new Date().toISOString();
 const lastAgentStatuses = new Map<string, string>();
 
 interface HeartbeatResult {
@@ -38,20 +87,7 @@ async function checkHeartbeat(): Promise<HeartbeatResult | null> {
     // MQ dir may not exist yet
   }
 
-  // Feed ALL new MQ messages to the agents panel
-  try {
-    const allMsgs = await readAllMessages(lastPanelMqCheck);
-    if (allMsgs.length > 0) {
-      lastPanelMqCheck = allMsgs[allMsgs.length - 1]!.timestamp;
-      for (const msg of allMsgs) {
-        addAgentMessage(msg.from, msg.to, msg.body, msg.id);
-      }
-    }
-  } catch {
-    // MQ dir may not exist yet
-  }
-
-  // Check agent status changes
+  // Check agent status changes (for the agent loop)
   try {
     const dirs = await readdir(AGENTS_DIR);
     for (const d of dirs) {
@@ -66,16 +102,6 @@ async function checkHeartbeat(): Promise<HeartbeatResult | null> {
             from: prev,
             to: meta.status,
           });
-          // Also push to the agents panel
-          addAgentStatus(meta.id, `${meta.id} ${prev} -> ${meta.status}`);
-        } else if (!prev) {
-          // First time seeing this agent
-          lastAgentStatuses.set(meta.id, meta.status);
-          const promptPreview = meta.prompt.slice(0, 60);
-          addAgentStatus(
-            meta.id,
-            `${meta.id} spawned: ${promptPreview}${meta.prompt.length > 60 ? "..." : ""}`,
-          );
         }
         lastAgentStatuses.set(meta.id, meta.status);
       } catch {

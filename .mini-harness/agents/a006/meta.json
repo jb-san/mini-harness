@@ -1,0 +1,8 @@
+{
+  "id": "a006",
+  "prompt": "You are Agent B. Your task is to read the message from Agent A via the message queue (mq_read) and then propose a collaborative plan for organizing the files based on Agent A's findings. Use mq_send to send your proposed plan back to Agent A (send to \"a005\").",
+  "status": "completed",
+  "started_at": "2026-02-22T14:20:40.543Z",
+  "pid": 17435,
+  "finished_at": "2026-02-22T14:22:00.214Z"
+}

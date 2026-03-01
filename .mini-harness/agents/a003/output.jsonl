@@ -1,0 +1,141 @@
+{"type":"reasoning","content":"The","timestamp":"2026-02-22T14:16:39.132Z"}
+{"type":"reasoning","content":" user","timestamp":"2026-02-22T14:16:39.156Z"}
+{"type":"reasoning","content":" wants","timestamp":"2026-02-22T14:16:39.181Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:16:39.206Z"}
+{"type":"reasoning","content":" explore","timestamp":"2026-02-22T14:16:39.231Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:16:39.256Z"}
+{"type":"reasoning","content":" current","timestamp":"2026-02-22T14:16:39.282Z"}
+{"type":"reasoning","content":" directory","timestamp":"2026-02-22T14:16:39.307Z"}
+{"type":"reasoning","content":" structure","timestamp":"2026-02-22T14:16:39.333Z"}
+{"type":"reasoning","content":" a","timestamp":"2026-02-22T14:16:39.384Z"}
+{"type":"reasoning","content":" comprehensive","timestamp":"2026-02-22T14:16:39.484Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:16:39.510Z"}
+{"type":"reasoning","content":" I","timestamp":"2026-02-22T14:16:39.562Z"}
+{"type":"reasoning","content":":\n\n","timestamp":"2026-02-22T14:16:39.612Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:16:39.638Z"}
+{"type":"reasoning","content":" list","timestamp":"2026-02-22T14:16:39.663Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:16:39.689Z"}
+{"type":"reasoning","content":" directory","timestamp":"2026-02-22T14:16:39.739Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:16:39.788Z"}
+{"type":"reasoning","content":" see","timestamp":"2026-02-22T14:16:39.814Z"}
+{"type":"reasoning","content":" in","timestamp":"2026-02-22T14:16:39.840Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:16:39.865Z"}
+{"type":"reasoning","content":" current","timestamp":"2026-02-22T14:16:39.942Z"}
+{"type":"reasoning","content":" location","timestamp":"2026-02-22T14:16:39.992Z"}
+{"type":"reasoning","content":"2","timestamp":"2026-02-22T14:16:40.018Z"}
+{"type":"reasoning","content":" Read","timestamp":"2026-02-22T14:16:40.045Z"}
+{"type":"reasoning","content":" key","timestamp":"2026-02-22T14:16:40.069Z"}
+{"type":"reasoning","content":" files","timestamp":"2026-02-22T14:16:40.094Z"}
+{"type":"reasoning","content":" be","timestamp":"2026-02-22T14:16:40.120Z"}
+{"type":"reasoning","content":" configuration","timestamp":"2026-02-22T14:16:40.195Z"}
+{"type":"reasoning","content":" (","timestamp":"2026-02-22T14:16:40.220Z"}
+{"type":"reasoning","content":"like","timestamp":"2026-02-22T14:16:40.245Z"}
+{"type":"reasoning","content":" package","timestamp":"2026-02-22T14:16:40.296Z"}
+{"type":"reasoning","content":",","timestamp":"2026-02-22T14:16:40.297Z"}
+{"type":"reasoning","content":" requirements","timestamp":"2026-02-22T14:16:40.373Z"}
+{"type":"reasoning","content":".txt","timestamp":"2026-02-22T14:16:40.425Z"}
+{"type":"reasoning","content":",","timestamp":"2026-02-22T14:16:40.450Z"}
+{"type":"reasoning","content":" README","timestamp":"2026-02-22T14:16:40.501Z"}
+{"type":"reasoning","content":",","timestamp":"2026-02-22T14:16:40.552Z"}
+{"type":"reasoning","content":" etc","timestamp":"2026-02-22T14:16:40.578Z"}
+{"type":"reasoning","content":" Look","timestamp":"2026-02-22T14:16:40.603Z"}
+{"type":"reasoning","content":" for","timestamp":"2026-02-22T14:16:40.629Z"}
+{"type":"reasoning","content":" in","timestamp":"2026-02-22T14:16:40.654Z"}
+{"type":"reasoning","content":"\n","timestamp":"2026-02-22T14:16:40.787Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:16:40.813Z"}
+{"type":"reasoning","content":" Provide","timestamp":"2026-02-22T14:16:40.837Z"}
+{"type":"reasoning","content":" a","timestamp":"2026-02-22T14:16:40.863Z"}
+{"type":"reasoning","content":"\n\n","timestamp":"2026-02-22T14:16:40.916Z"}
+{"type":"reasoning","content":"Let","timestamp":"2026-02-22T14:16:40.942Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:16:40.968Z"}
+{"type":"reasoning","content":" by","timestamp":"2026-02-22T14:16:40.994Z"}
+{"type":"reasoning","content":" listing","timestamp":"2026-02-22T14:16:41.020Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:16:41.045Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:16:41.098Z"}
+{"type":"content","content":"'ll","timestamp":"2026-02-22T14:16:41.202Z"}
+{"type":"content","content":" explore","timestamp":"2026-02-22T14:16:41.230Z"}
+{"type":"content","content":" the","timestamp":"2026-02-22T14:16:41.256Z"}
+{"type":"content","content":" current","timestamp":"2026-02-22T14:16:41.281Z"}
+{"type":"content","content":" directory","timestamp":"2026-02-22T14:16:41.307Z"}
+{"type":"content","content":" structure","timestamp":"2026-02-22T14:16:41.332Z"}
+{"type":"content","content":" and","timestamp":"2026-02-22T14:16:41.359Z"}
+{"type":"content","content":" with","timestamp":"2026-02-22T14:16:41.436Z"}
+{"type":"content","content":".","timestamp":"2026-02-22T14:16:41.514Z"}
+{"type":"tool_call_start","name":"list_dir","args":{},"timestamp":"2026-02-22T14:16:41.619Z"}
+{"type":"tool_call","name":"list_dir","result":"[{\"name\":\"ui\",\"type\":\"directory\"},{\"name\":\".cursor\",\"type\":\"directory\"},{\"name\":\"tools\",\"type\":\"directory\"},{\"name\":\"agent.ts\",\"type\":\"file\"},{\"name\":\"node_modules\",\"type\":\"directory\"},{\"name\":\"cli.ts\",\"type\":\"file\"},{\"name\":\".claude\",\"type\":\"directory\"},{\"name\":\"bun.lock\",\"type\":\"file\"},{\"name\":\"README.md\",\"type\":\"file\"},{\"name\":\"stream.ts\",\"type\":\"file\"},{\"name\":\"core.ts\",\"type\":\"file\"},{\"name\":\".gitignore\",\"type\":\"file\"},{\"name\":\"package.json\",\"type\":\"file\"},{\"name\":\"memory.txt\",\"type\":\"file\"},{\"name\":\"prompts\",\"type\":\"directory\"},{\"name\":\"tsconfig.json\",\"type\":\"file\"},{\"name\":\".mini-harness\",\"type\":\"directory\"},{\"name\":\"index.ts\",\"type\":\"file\"},{\"name\":\".git\",\"type\":\"directory\"},{\"name\":\"CLAUDE.md\",\"type\":\"file\"}]","timestamp":"2026-02-22T14:16:41.619Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:16:50.667Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:16:50.715Z"}
+{"type":"reasoning","content":" sub","timestamp":"2026-02-22T14:16:50.740Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:16:50.815Z"}
+{"type":"reasoning","content":" better","timestamp":"2026-02-22T14:16:50.841Z"}
+{"type":"reasoning","content":" understanding","timestamp":"2026-02-22T14:16:50.918Z"}
+{"type":"reasoning","content":" of","timestamp":"2026-02-22T14:16:50.918Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:16:50.944Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:16:50.994Z"}
+{"type":"tool_call_start","name":"list_dir","args":{"path":"ui"},"timestamp":"2026-02-22T14:16:52.662Z"}
+{"type":"tool_call","name":"list_dir","result":"[{\"name\":\"index.tsx\",\"type\":\"file\"},{\"name\":\"debug.ts\",\"type\":\"file\"}]","timestamp":"2026-02-22T14:16:52.662Z"}
+{"type":"reasoning","content":"Let","timestamp":"2026-02-22T14:17:02.718Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:17:02.743Z"}
+{"type":"reasoning","content":" other","timestamp":"2026-02-22T14:17:02.767Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:17:02.866Z"}
+{"type":"reasoning","content":" a","timestamp":"2026-02-22T14:17:02.891Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:17:02.943Z"}
+{"type":"tool_call_start","name":"list_dir","args":{"path":"tools"},"timestamp":"2026-02-22T14:17:04.065Z"}
+{"type":"tool_call","name":"list_dir","result":"[{\"name\":\"write_file.ts\",\"type\":\"file\"},{\"name\":\"read_file.ts\",\"type\":\"file\"},{\"name\":\"run_shell.ts\",\"type\":\"file\"},{\"name\":\"mq.ts\",\"type\":\"file\"},{\"name\":\"agents.ts\",\"type\":\"file\"},{\"name\":\"index.ts\",\"type\":\"file\"},{\"name\":\"tasks.ts\",\"type\":\"file\"},{\"name\":\"list_dir.ts\",\"type\":\"file\"}]","timestamp":"2026-02-22T14:17:04.065Z"}
+{"type":"reasoning","content":"Let","timestamp":"2026-02-22T14:17:15.841Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:17:15.865Z"}
+{"type":"reasoning","content":" check","timestamp":"2026-02-22T14:17:15.891Z"}
+{"type":"reasoning","content":" too","timestamp":"2026-02-22T14:17:15.968Z"}
+{"type":"tool_call_start","name":"list_dir","args":{"path":"prompts"},"timestamp":"2026-02-22T14:17:16.286Z"}
+{"type":"tool_call","name":"list_dir","result":"[{\"name\":\"sub_agent.ts\",\"type\":\"file\"},{\"name\":\"system.ts\",\"type\":\"file\"}]","timestamp":"2026-02-22T14:17:16.286Z"}
+{"type":"reasoning","content":"Let","timestamp":"2026-02-22T14:17:28.932Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:17:28.955Z"}
+{"type":"reasoning","content":" key","timestamp":"2026-02-22T14:17:28.980Z"}
+{"type":"reasoning","content":" files","timestamp":"2026-02-22T14:17:29.059Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:17:29.078Z"}
+{"type":"reasoning","content":" understand","timestamp":"2026-02-22T14:17:29.102Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:17:29.128Z"}
+{"type":"reasoning","content":" better","timestamp":"2026-02-22T14:17:29.177Z"}
+{"type":"tool_call_start","name":"read_file","args":{"path":"package.json"},"timestamp":"2026-02-22T14:17:30.040Z"}
+{"type":"tool_call","name":"read_file","result":"{\n  \"name\": \"mini-harness\",\n  \"module\": \"index.ts\",\n  \"type\": \"module\",\n  \"private\": true,\n  \"scripts\": {\n    \"start\": \"bun index.ts\",\n    \"lint\": \"bun lint\",\n    \"test\": \"bun test\"\n  },\n  \"devDependencies\": {\n    \"@types/bun\": \"latest\",\n    \"@types/react\": \"^19.2.14\"\n  },\n  \"peerDependencies\": {\n    \"typescript\": \"^5\"\n  },\n  \"dependencies\": {\n    \"@opentui/core\": \"^0.1.80\",\n    \"@opentui/react\": \"^0.1.80\",\n    \"react\": \"^19.2.4\"\n  }\n}\n","timestamp":"2026-02-22T14:17:30.041Z"}
+{"type":"reasoning","content":" is","timestamp":"2026-02-22T14:17:47.127Z"}
+{"type":"reasoning","content":" -","timestamp":"2026-02-22T14:17:47.245Z"}
+{"type":"reasoning","content":" a","timestamp":"2026-02-22T14:17:47.271Z"}
+{"type":"reasoning","content":" multi","timestamp":"2026-02-22T14:17:47.296Z"}
+{"type":"reasoning","content":"-agent","timestamp":"2026-02-22T14:17:47.346Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:17:47.396Z"}
+{"type":"reasoning","content":" Let","timestamp":"2026-02-22T14:17:47.421Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:17:47.447Z"}
+{"type":"reasoning","content":" read","timestamp":"2026-02-22T14:17:47.471Z"}
+{"type":"reasoning","content":" main","timestamp":"2026-02-22T14:17:47.496Z"}
+{"type":"reasoning","content":" entry","timestamp":"2026-02-22T14:17:47.548Z"}
+{"type":"reasoning","content":" point","timestamp":"2026-02-22T14:17:47.573Z"}
+{"type":"reasoning","content":" and","timestamp":"2026-02-22T14:17:47.598Z"}
+{"type":"reasoning","content":" files","timestamp":"2026-02-22T14:17:47.624Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:17:47.648Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:17:47.673Z"}
+{"type":"reasoning","content":" better","timestamp":"2026-02-22T14:17:47.749Z"}
+{"type":"tool_call_start","name":"read_file","args":{"path":"index.ts"},"timestamp":"2026-02-22T14:17:48.055Z"}
+{"type":"tool_call","name":"read_file","result":"import { createUI } from \"./ui\";\nimport { createSession } from \"./core\";\nimport { readMessages, readAllMessages } from \"./tools/mq\";\nimport { readdir } from \"fs/promises\";\nimport type { AgentMeta } from \"./tools/agents\";\n\nconst AGENTS_DIR = \".mini-harness/agents\";\nconst HEARTBEAT_INTERVAL_MS = 30_000;\n\nconst { callbacks, waitForInput, addAgentMessage, addAgentStatus } =\n  await createUI();\nconst session = createSession();\n\n// --- Heartbeat state ---\nlet lastMqCheck = new Date().toISOString();\nlet lastPanelMqCheck = new Date().toISOString();\nconst lastAgentStatuses = new Map<string, string>();\n\ninterface HeartbeatResult {\n  messages: { from: string; body: string }[];\n  agentChanges: { id: string; from: string; to: string }[];\n}\n\nasync function checkHeartbeat(): Promise<HeartbeatResult | null> {\n  const result: HeartbeatResult = {\n    messages: [],\n    agentChanges: [],\n  };\n\n  // Check MQ for new messages to \"main\" (for the agent loop)\n  try {\n    const msgs = await readMessages(\"main\", lastMqCheck);\n    if (msgs.length > 0) {\n      lastMqCheck = msgs[msgs.length - 1]!.timestamp;\n      result.messages = msgs.map((m) => ({ from: m.from, body: m.body }));\n    }\n  } catch {\n    // MQ dir may not exist yet\n  }\n\n  // Feed ALL new MQ messages to the agents panel\n  try {\n    const allMsgs = await readAllMessages(lastPanelMqCheck);\n    if (allMsgs.length > 0) {\n      lastPanelMqCheck = allMsgs[allMsgs.length - 1]!.timestamp;\n      for (const msg of allMsgs) {\n        addAgentMessage(msg.from, msg.to, msg.body, msg.id);\n      }\n    }\n  } catch {\n    // MQ dir may not exist yet\n  }\n\n  // Check agent status changes\n  try {\n    const dirs = await readdir(AGENTS_DIR);\n    for (const d of dirs) {\n      try {\n        const meta: AgentMeta = await Bun.file(\n          `${AGENTS_DIR}/${d}/meta.json`,\n        ).json();\n        const prev = lastAgentStatuses.get(meta.id);\n        if (prev && prev !== meta.status) {\n          result.agentChanges.push({\n            id: meta.id,\n          ","timestamp":"2026-02-22T14:17:48.055Z"}
+{"type":"reasoning","content":"Now","timestamp":"2026-02-22T14:18:13.583Z"}
+{"type":"reasoning","content":" let","timestamp":"2026-02-22T14:18:13.608Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:18:13.634Z"}
+{"type":"reasoning","content":" check","timestamp":"2026-02-22T14:18:13.659Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:18:13.685Z"}
+{"type":"reasoning","content":".md","timestamp":"2026-02-22T14:18:13.711Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:18:13.738Z"}
+{"type":"reasoning","content":" understand","timestamp":"2026-02-22T14:18:13.763Z"}
+{"type":"reasoning","content":" the","timestamp":"2026-02-22T14:18:13.816Z"}
+{"type":"reasoning","content":"'s","timestamp":"2026-02-22T14:18:13.842Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:18:13.894Z"}
+{"type":"tool_call_start","name":"read_file","args":{"path":"README.md"},"timestamp":"2026-02-22T14:18:14.211Z"}
+{"type":"tool_call","name":"read_file","result":"# Mini-Harness\n\nA local LLM harness that enables AI agents to interact with the filesystem and shell through tool calling. This project experiments with creating a framework for building autonomous AI agents that can perform tasks by calling tools.\n\n## What it does\n\nThis harness connects to a local LLM (default: Ollama running `glm-4.7-flash`) and enables the AI to:\n\n- **Read files** - Read contents of any file on the system\n- **Write files** - Create or overwrite files with specified content\n- **List directories** - List files and directories in a given path\n- **Run shell commands** - Execute shell commands and capture output\n\nThe system uses a loop that:\n1. Sends messages to the LLM with available tools\n2. Parses tool calls from the LLM response\n3. Executes the tools and returns results\n4. Feeds results back to the LLM for the next iteration\n5. Continues until the LLM produces a final response without tool calls\n\n## Prerequisites\n\n- **Node.js** (or Bun) installed\n- **Ollama** running locally with the `glm-4.7-flash` model\n  - Install Ollama: https://ollama.ai\n  - Pull the model: `ollama pull glm-4.7-flash`\n\n## Installation\n\n```bash\nbun install\n```\n\n## Running\n\n```bash\nbun start\n```\n\nOr with npm:\n```bash\nnpm install\nnpm start\n```\n\n## Usage\n\n1. Start the harness: `bun start`\n2. Type your message and press Enter\n3. The AI will respond, potentially calling tools to help you\n4. Type `ctrl+c` to quit\n\n## Examples\n\n### Read a file\n```\n> Read package.json and tell me what dependencies are listed\n```\n\n### List directory contents\n```\n> List all files in the current directory\n```\n\n### Run a shell command\n```\n> Run `ls -la` and show me the output\n```\n\n### Create a file\n```\n> Create a file called hello.txt with the content \"Hello, World!\"\n```\n\n## Concepts I want to learn\n\n- [x] handle raw interactions with local llms\n- [x] tool calling\n- [ ] memory management\n- [ ] context management\n- [x] task system\n- [ ] agent orchistration\n- [ ] security restrictions\n","timestamp":"2026-02-22T14:18:14.212Z"}
+{"type":"reasoning","content":" me","timestamp":"2026-02-22T14:19:00.429Z"}
+{"type":"reasoning","content":" a","timestamp":"2026-02-22T14:19:00.481Z"}
+{"type":"reasoning","content":" few","timestamp":"2026-02-22T14:19:00.507Z"}
+{"type":"reasoning","content":" more","timestamp":"2026-02-22T14:19:00.536Z"}
+{"type":"reasoning","content":" key","timestamp":"2026-02-22T14:19:00.562Z"}
+{"type":"reasoning","content":" to","timestamp":"2026-02-22T14:19:00.615Z"}
+{"type":"reasoning","content":" get","timestamp":"2026-02-22T14:19:00.641Z"}
+{"type":"reasoning","content":".","timestamp":"2026-02-22T14:19:00.694Z"}
+{"type":"tool_call","name":"read_file","result":"import { getToolsForAgent } from \"./tools\";\nimport { systemPrompt } from \"./prompts/system\";\nimport { streamResponse, type StreamCallbacks } from \"./stream\";\nimport { debug } from \"./ui/debug\";\n\nconst LLM_BASE_URL = \"http://localhost:1234/v1\";\nconst CHAT_URL = `${LLM_BASE_URL}/chat/completions`;\nconst MAX_ITERATIONS = 100;\n\n// --- Types ---\n\ntype Message =\n  | { role: \"system\" | \"user\"; content: string }\n  | { role: \"assistant\"; content: string | null; tool_calls?: ChatToolCall[] }\n  | { role: \"tool\"; tool_call_id: string; content: string };\n\ninterface ChatToolCall {\n  id: string;\n  type: \"function\";\n  function: { name: string; arguments: string };\n}\n\nexport interface UICallbacks {\n  onIterationStart: (iteration: number) => void;\n  onContentChunk: (chunk: string) => void;\n  onReasoningChunk: (chunk: string) => void;\n  onToolStart: (name: string, args: Record<string, unknown>) => void;\n  onToolResult: (name: string, result: string) => void;\n  onToolError: (name: string, error: string) => void;\n  onAssistantDone: (text: string) => void;\n  onError: (error: string) => void;\n  onContextUpdate: (info: {\n    model: string;\n    tokensUsed: number;\n    maxTokens: number;\n  }) => void;\n}\n\nexport interface SessionOptions {\n  agentId?: string;\n  systemPrompt?: string;\n  isSubAgent?: boolean;\n}\n\n// --- Agent loop ---\n\nconst MODEL = \"zai-org/glm-4.7-flash\";\nconst MAX_TOKENS = 202752;\n\nexport function createSession(options?: SessionOptions) {\n  const agentId = options?.agentId ?? \"main\";\n  const sysPrompt = options?.systemPrompt ?? systemPrompt;\n  const isSubAgent = options?.isSubAgent ?? false;\n\n  const agentTools = getToolsForAgent(agentId, isSubAgent);\n  const messages: Message[] = [{ role: \"system\", content: sysPrompt }];\n\n  return {\n    messages,\n    async run(prompt: string, ui: UICallbacks) {\n      return runWithMessages(messages, prompt, ui, agentTools);\n    },\n  };\n}\n\nasync function runWithMessages(\n  messages: Message[],\n  prompt: string,\n  ui: UICallbacks,\n  agentTools:","timestamp":"2026-02-22T14:19:01.012Z"}

@@ -8,15 +8,23 @@ You share a filesystem with the main agent and other sub-agents. Complete your a
 - Task tools (create_task, list_tasks, read_task, update_task, move_task) — task management
 - mq_send, mq_read — message queue for communicating with other agents
 
-## Message Queue
-Your agent ID is \`${agentId}\`. Use it to receive messages.
-- \`mq_send\` to send messages to \`"main"\` (the orchestrating agent), another sub-agent by ID, or \`"broadcast"\` to all.
-- \`mq_read\` to check for messages addressed to you or broadcast.
-- Send a message to \`"main"\` if you need help, encounter a blocker, or want to report progress on a long task.
+## Message Queue — IMPORTANT
+Your agent ID is \`${agentId}\`. The message queue is how the main agent and other agents see what you're doing. You MUST use it.
+
+**Required messages — always send these via mq_send to "main":**
+1. **On start:** Immediately send a brief message describing what you're about to do. Example: "Starting: analyzing auth.ts for security issues"
+2. **On progress:** After completing a significant step (finding something, making a change, running a test), send a short update. Example: "Found SQL injection on line 42, fixing now"
+3. **On completion:** Send a summary of what you accomplished and any key findings. Example: "Done. Fixed 2 SQL injection vulnerabilities in auth.ts and added input sanitization."
+4. **On error/blocker:** If you hit a problem you can't resolve, report it. Example: "Blocked: can't find the database config file, need guidance"
+
+Keep messages short (1-2 sentences). The main agent monitors these in a live panel.
+
+**To communicate with other sub-agents:** use their agent ID (e.g. "a001") as the \`to\` field, or "broadcast" to message everyone.
+**To check for messages:** use \`mq_read\` to see if the main agent or other agents have sent you instructions.
 
 ## Guidelines
 - Stay focused on your assigned task.
 - Be concise — your output is logged and reviewed by the main agent.
 - Do NOT spawn other agents — you cannot.
-- When done, provide a clear summary of what you accomplished.`;
+- Always use the message queue to report your progress — this is your primary communication channel.`;
 }

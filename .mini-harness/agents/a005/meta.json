@@ -1,0 +1,8 @@
+{
+  "id": "a005",
+  "prompt": "You are Agent A. Your task is to analyze the current directory structure and identify what files exist. Report back your findings to Agent B via the message queue. Use mq_send to send a message to \"a001\" (Agent B) with your findings.",
+  "status": "completed",
+  "started_at": "2026-02-22T14:20:36.686Z",
+  "pid": 17429,
+  "finished_at": "2026-02-22T14:22:13.438Z"
+}

@@ -1,6 +1,6 @@
-import { getToolsForAgent } from "./tools";
 import { systemPrompt } from "./prompts/system";
 import { streamResponse, type StreamCallbacks } from "./stream";
+import { getToolsForAgent } from "./tools";
 import { debug } from "./ui/debug";
 
 const LLM_BASE_URL = "http://localhost:1234/v1";
@@ -44,7 +44,7 @@ export interface SessionOptions {
 
 // --- Agent loop ---
 
-const MODEL = "zai-org/glm-4.7-flash";
+const MODEL = "qwen/qwen3.5-35b-a3b";
 const MAX_TOKENS = 202752;
 
 export function createSession(options?: SessionOptions) {

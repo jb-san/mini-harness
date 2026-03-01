@@ -1,5 +1,6 @@
 import { createSession, type UICallbacks } from "./core";
 import { subAgentPrompt } from "./prompts/sub_agent";
+import { sendMessage } from "./tools/mq";
 import { mkdir } from "fs/promises";
 
 const agentId = process.env.AGENT_ID;
@@ -34,6 +35,9 @@ let stepsCount = 0;
 let totalTokens = 0;
 const startedAt = new Date().toISOString();
 
+// --- Automatic MQ reporting ---
+await sendMessage(agentId, "broadcast", `Starting: ${prompt.slice(0, 150)}`);
+
 const callbacks: UICallbacks = {
   onIterationStart(iteration) {
     stepsCount = iteration;
@@ -46,12 +50,16 @@ const callbacks: UICallbacks = {
   },
   onToolStart(name, args) {
     appendOutput({ type: "tool_call_start", name, args });
+    // Report each tool call to the panel
+    const argsPreview = JSON.stringify(args).slice(0, 80);
+    sendMessage(agentId, "broadcast", `${name}(${argsPreview})`);
   },
   onToolResult(name, result) {
     appendOutput({ type: "tool_call", name, result: result.slice(0, 2000) });
   },
   onToolError(name, error) {
     appendOutput({ type: "tool_error", name, error });
+    sendMessage(agentId, "broadcast", `Error in ${name}: ${error.slice(0, 150)}`);
   },
   onAssistantDone(text) {
     appendOutput({ type: "done", content: text });
@@ -99,6 +107,12 @@ try {
   meta.status = "completed";
   meta.finished_at = result.finished_at;
   await Bun.write(metaPath, JSON.stringify(meta, null, 2));
+
+  // Report completion
+  const summary = finalResponse
+    ? `Done (${stepsCount} steps). ${finalResponse.slice(0, 200)}`
+    : `Done (${stepsCount} steps).`;
+  await sendMessage(agentId, "broadcast", summary);
 } catch (err) {
   const result = {
     agent_id: agentId,
@@ -122,5 +136,6 @@ try {
     // best effort
   }
 
+  await sendMessage(agentId, "broadcast", `Failed: ${String(err).slice(0, 200)}`);
   process.exit(1);
 }
