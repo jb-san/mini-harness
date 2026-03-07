@@ -1,8 +1,7 @@
-import type { Tool } from "./index";
+import type { Tool } from "../tool.ts";
 
-export const write_file: Tool = {
+export const writeFile: Tool = {
   definition: {
-    type: "function",
     name: "write_file",
     description: "Write content to a file, creating it if it doesn't exist",
     parameters: {
@@ -20,7 +19,7 @@ export const write_file: Tool = {
       required: ["path", "content"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     await Bun.write(args.path as string, args.content as string);
     return JSON.stringify({ success: true, path: args.path });
   },

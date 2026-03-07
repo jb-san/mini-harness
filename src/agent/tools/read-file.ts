@@ -1,8 +1,7 @@
-import type { Tool } from "./index";
+import type { Tool } from "../tool.ts";
 
-export const read_file: Tool = {
+export const readFile: Tool = {
   definition: {
-    type: "function",
     name: "read_file",
     description: "Read the contents of a file at the given path",
     parameters: {
@@ -16,7 +15,7 @@ export const read_file: Tool = {
       required: ["path"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const file = Bun.file(args.path as string);
     if (!(await file.exists())) {
       return JSON.stringify({ error: `File not found: ${args.path}` });

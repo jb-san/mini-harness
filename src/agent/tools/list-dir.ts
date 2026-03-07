@@ -1,9 +1,8 @@
 import { readdir } from "fs/promises";
-import type { Tool } from "./index";
+import type { Tool } from "../tool.ts";
 
-export const list_dir: Tool = {
+export const listDir: Tool = {
   definition: {
-    type: "function",
     name: "list_dir",
     description: "List files and directories at the given path",
     parameters: {
@@ -16,7 +15,7 @@ export const list_dir: Tool = {
       },
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const dir = (args.path as string) || ".";
     const entries = await readdir(dir, { withFileTypes: true });
     const items = entries.map((e) => ({

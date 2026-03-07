@@ -1,5 +1,6 @@
-import { readdir, mkdir, rename } from "fs/promises";
-import type { Tool } from "./index";
+import { readdir, mkdir, unlink } from "fs/promises";
+import type { Extension } from "../../harness/types.ts";
+import type { Tool, ToolContext } from "../../agent/tool.ts";
 
 const TASKS_DIR = ".mini-harness/tasks";
 const STATUSES = ["todo", "doing", "done"] as const;
@@ -32,7 +33,7 @@ async function nextId(): Promise<string> {
 }
 
 async function findTask(
-  id: string
+  id: string,
 ): Promise<{ status: Status; filename: string; path: string } | null> {
   await ensureDirs();
   for (const s of STATUSES) {
@@ -49,9 +50,8 @@ async function findTask(
   return null;
 }
 
-export const create_task: Tool = {
+const createTask: Tool = {
   definition: {
-    type: "function",
     name: "create_task",
     description:
       "Create a new task in the todo folder with a title, description, and acceptance criteria",
@@ -69,7 +69,7 @@ export const create_task: Tool = {
       required: ["title", "description", "criteria"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const title = args.title as string;
     const description = args.description as string;
     const criteria = args.criteria as string[];
@@ -94,9 +94,8 @@ export const create_task: Tool = {
   },
 };
 
-export const list_tasks: Tool = {
+const listTasks: Tool = {
   definition: {
-    type: "function",
     name: "list_tasks",
     description:
       'List tasks, optionally filtered by status ("todo", "doing", "done")',
@@ -111,7 +110,7 @@ export const list_tasks: Tool = {
       },
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     await ensureDirs();
     const folders =
       args.status && STATUSES.includes(args.status as Status)
@@ -135,9 +134,8 @@ export const list_tasks: Tool = {
   },
 };
 
-export const read_task: Tool = {
+const readTask: Tool = {
   definition: {
-    type: "function",
     name: "read_task",
     description: "Read a task's full contents and current status by its ID",
     parameters: {
@@ -151,7 +149,7 @@ export const read_task: Tool = {
       required: ["id"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const found = await findTask(args.id as string);
     if (!found) {
       return JSON.stringify({ error: `Task not found: ${args.id}` });
@@ -161,9 +159,8 @@ export const read_task: Tool = {
   },
 };
 
-export const update_task: Tool = {
+const updateTask: Tool = {
   definition: {
-    type: "function",
     name: "update_task",
     description:
       "Overwrite a task's markdown content (e.g. to check off acceptance criteria)",
@@ -179,7 +176,7 @@ export const update_task: Tool = {
       required: ["id", "content"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const found = await findTask(args.id as string);
     if (!found) {
       return JSON.stringify({ error: `Task not found: ${args.id}` });
@@ -189,9 +186,8 @@ export const update_task: Tool = {
   },
 };
 
-export const move_task: Tool = {
+const moveTask: Tool = {
   definition: {
-    type: "function",
     name: "move_task",
     description:
       'Move a task between statuses (todo, doing, done). Moving to "done" requires all acceptance criteria to be checked off.',
@@ -208,7 +204,7 @@ export const move_task: Tool = {
       required: ["id", "to"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const id = args.id as string;
     const to = args.to as Status;
 
@@ -223,7 +219,6 @@ export const move_task: Tool = {
 
     const content = await Bun.file(found.path).text();
 
-    // Gate: moving to done requires all criteria checked
     if (to === "done") {
       const unchecked = content
         .split("\n")
@@ -238,7 +233,6 @@ export const move_task: Tool = {
       }
     }
 
-    // Append completion timestamp when moving to done
     let finalContent = content;
     if (to === "done") {
       finalContent =
@@ -248,9 +242,6 @@ export const move_task: Tool = {
 
     const newPath = `${TASKS_DIR}/${to}/${found.filename}`;
     await Bun.write(newPath, finalContent);
-
-    // Remove original if it's in a different folder
-    const { unlink } = await import("fs/promises");
     await unlink(found.path);
 
     return JSON.stringify({
@@ -259,5 +250,16 @@ export const move_task: Tool = {
       to,
       filename: found.filename,
     });
+  },
+};
+
+export const tasksExtension: Extension = {
+  name: "tasks",
+  activate(api) {
+    api.registerTool(createTask);
+    api.registerTool(listTasks);
+    api.registerTool(readTask);
+    api.registerTool(updateTask);
+    api.registerTool(moveTask);
   },
 };

@@ -1,8 +1,7 @@
-import type { Tool } from "./index";
+import type { Tool } from "../tool.ts";
 
-export const run_shell: Tool = {
+export const runShell: Tool = {
   definition: {
-    type: "function",
     name: "run_shell",
     description: "Execute a shell command and return stdout/stderr",
     parameters: {
@@ -16,7 +15,7 @@ export const run_shell: Tool = {
       required: ["command"],
     },
   },
-  async execute(args) {
+  async execute(args, _ctx) {
     const proc = Bun.spawn(["sh", "-c", args.command as string], {
       stdout: "pipe",
       stderr: "pipe",
