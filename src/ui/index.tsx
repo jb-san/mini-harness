@@ -405,14 +405,20 @@ function App({
 
   const renderer = useRenderer();
   useKeyboard((key) => {
-    if (key.name === "c" && (key.meta || key.ctrl)) {
-      const selection = renderer.getSelection();
-      if (selection?.isActive) {
-        const text = selection.getSelectedText();
-        if (text) {
-          renderer.copyToClipboardOSC52(text);
-        }
+    if (key.name !== "c") return;
+
+    const selection = renderer.getSelection();
+    if ((key.meta || key.ctrl) && selection?.isActive) {
+      const text = selection.getSelectedText();
+      if (text) {
+        renderer.copyToClipboardOSC52(text);
       }
+      return;
+    }
+
+    if (key.ctrl) {
+      renderer.destroy();
+      process.exit(0);
     }
   });
 
