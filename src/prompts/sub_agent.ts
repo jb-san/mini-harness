@@ -7,6 +7,7 @@ You share a filesystem with the main agent and other sub-agents. Complete your a
 - read_file, write_file, list_dir, run_shell — filesystem and shell access
 - Task tools (create_task, list_tasks, read_task, update_task, move_task) — task management
 - mq_send, mq_read — mailbox tools for communicating with other agents
+- discover_skills — discover specialized skills when a task needs a defined workflow
 
 ## Mailbox — IMPORTANT
 Your agent ID is \`${agentId}\`. The mailbox system is how the main agent and other agents see what you're doing. You MUST use it.

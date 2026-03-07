@@ -3,9 +3,7 @@ import { createHarness } from "./src/harness/harness.ts";
 import { createToolExecutor } from "./src/agent/tool-executor.ts";
 import { Agent } from "./src/agent/agent.ts";
 import { systemPrompt } from "./src/prompts/system.ts";
-import { tasksExtension } from "./src/extensions/tasks/index.ts";
-import { mqExtension } from "./src/extensions/mq/index.ts";
-import { agentsExtension } from "./src/extensions/agents/index.ts";
+import { skillsExtension } from "./src/extensions/skills/index.ts";
 
 const prompt = process.argv.slice(2).join(" ");
 if (!prompt) {
@@ -17,11 +15,11 @@ const bus = new MessageBus();
 
 const harness = await createHarness({
   bus,
-  extensions: [tasksExtension, mqExtension, agentsExtension],
+  extensions: [skillsExtension],
   systemPrompt,
 });
 
-createToolExecutor(bus, harness.registry);
+createToolExecutor(bus, harness.registry, harness.hooks);
 
 // Console output via bus subscribers
 bus.on("llm:chunk:reasoning", ({ text }) => {
@@ -47,8 +45,6 @@ bus.on("tool:error", ({ name, error }) => {
 
 bus.on("llm:done", ({ agentId }) => {
   if (agentId !== "main") return;
-  // Only exit when no sub-agents are still running
-  // Give a tick for any pending agent:completed notifications to deliver
   setTimeout(() => {
     process.stderr.write(`\n--- done ---\n`);
     process.exit(0);

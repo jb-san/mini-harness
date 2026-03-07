@@ -14,6 +14,7 @@ export type MsgMap = {
   "agent:error":         { agentId: string; error: string };
   "agent:message":       { from: string; to: string; body: string };
   "context:update":      { agentId: string; model: string; tokensUsed: number; maxTokens: number };
+  "hook:event":          { status: "loaded" | "run" | "blocked" | "error"; hook: string; source: string; detail: string };
 };
 
 export type MsgType = keyof MsgMap;

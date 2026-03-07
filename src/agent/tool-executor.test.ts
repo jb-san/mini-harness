@@ -140,3 +140,85 @@ test("multiple concurrent tool calls execute in parallel", async () => {
   expect(order[0]).toBe("start-A");
   expect(order[1]).toBe("start-B");
 });
+
+test("beforeToolCall hook can block tool execution", async () => {
+  const bus = new MessageBus();
+  const registry = new ToolRegistry();
+
+  let executed = false;
+  registry.register({
+    definition: { name: "echo", description: "Echo" },
+    async execute() {
+      executed = true;
+      return "ok";
+    },
+  });
+
+  const hooks = {
+    async beforeToolCall() {
+      return { allow: false as const, reason: "blocked by policy" };
+    },
+    async afterToolCall() {},
+    async onToolError() {},
+  };
+
+  createToolExecutor(bus, registry, hooks as any);
+
+  const errorPromise = bus.next("tool:error", (p) => p.callId === "c5");
+  bus.emit("tool:call", {
+    agentId: "main",
+    callId: "c5",
+    name: "echo",
+    args: {},
+  });
+
+  const error = await errorPromise;
+  expect(executed).toBe(false);
+  expect(error.error).toContain("blocked by policy");
+});
+
+test("tool executor notifies hooks after success and failure", async () => {
+  const bus = new MessageBus();
+  const registry = new ToolRegistry();
+
+  const events: string[] = [];
+
+  registry.register({
+    definition: { name: "ok", description: "ok" },
+    async execute() {
+      return "done";
+    },
+  });
+
+  registry.register({
+    definition: { name: "boom", description: "boom" },
+    async execute() {
+      throw new Error("nope");
+    },
+  });
+
+  const hooks = {
+    async beforeToolCall() {
+      return { allow: true as const };
+    },
+    async afterToolCall(event: any) {
+      events.push(`after:${event.name}:${event.result}`);
+    },
+    async onToolError(event: any) {
+      events.push(`error:${event.name}:${event.error}`);
+    },
+  };
+
+  createToolExecutor(bus, registry, hooks as any);
+
+  const okPromise = bus.next("tool:result", (p) => p.callId === "c6");
+  const errPromise = bus.next("tool:error", (p) => p.callId === "c7");
+
+  bus.emit("tool:call", { agentId: "main", callId: "c6", name: "ok", args: {} });
+  bus.emit("tool:call", { agentId: "main", callId: "c7", name: "boom", args: {} });
+
+  await Promise.all([okPromise, errPromise]);
+
+  expect(events).toContain("after:ok:done");
+  expect(events.some((entry) => entry.startsWith("error:boom:"))).toBe(true);
+});

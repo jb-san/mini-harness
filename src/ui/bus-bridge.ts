@@ -371,6 +371,22 @@ export function connectBusBridge(bus: MessageBus, store: Store, agentId = "main"
     }
   });
 
+  bus.on("hook:event", ({ status, hook, source, detail }) => {
+    const tone =
+      status === "error" ? "error" :
+      status === "blocked" ? "error" :
+      status === "loaded" ? "info" :
+      "success";
+
+    appendActivity({
+      type: "status",
+      key: nextKey("hook"),
+      agentId: "hook",
+      text: `${hook} ${status}: ${detail} (${source.split("/").pop()})`,
+      tone,
+    });
+  });
+
   return {
     addUserMessage(text: string) {
       reasoningBuffer = "";

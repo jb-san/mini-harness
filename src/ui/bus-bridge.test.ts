@@ -155,6 +155,22 @@ test("agent:message updates timeline and counters", () => {
   expect(mainSummary?.messagesReceived).toBe(1);
 });
 
+test("hook:event appears in telemetry timeline", () => {
+  const bus = new MessageBus();
+  const store = freshStore();
+  connectBusBridge(bus, store);
+
+  bus.emit("hook:event", {
+    status: "blocked",
+    hook: "beforeToolCall",
+    source: "/tmp/tools.ts",
+    detail: "shell blocked",
+  });
+
+  expect(store.getState().activityLog.length).toBe(1);
+  expect(store.getState().activityLog[0].type).toBe("status");
+});
+
 test("sub-agent events stay out of main chat but appear in telemetry", () => {
   const bus = new MessageBus();
   const store = freshStore();

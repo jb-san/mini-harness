@@ -3,12 +3,19 @@ import { MessageBus } from "../mq/bus.ts";
 import { createHarness } from "./harness.ts";
 import type { Extension } from "./types.ts";
 
-test("createHarness registers 4 core tools", async () => {
+test("createHarness registers 6 core tools", async () => {
   const bus = new MessageBus();
   const harness = await createHarness({ bus });
 
   const names = harness.registry.definitions.map((d) => d.name).sort();
-  expect(names).toEqual(["list_dir", "read_file", "run_shell", "write_file"]);
+  expect(names).toEqual([
+    "list_dir",
+    "read_file",
+    "run_shell",
+    "web_scrape",
+    "web_search",
+    "write_file",
+  ]);
 
   await harness.destroy();
 });
@@ -40,7 +47,7 @@ test("createHarness with no extensions works", async () => {
   const bus = new MessageBus();
   const harness = await createHarness({ bus });
 
-  expect(harness.registry.definitions.length).toBe(4);
+  expect(harness.registry.definitions.length).toBe(6);
   await harness.destroy();
 });
 
@@ -60,7 +67,7 @@ test("extension can register tools via API", async () => {
   const harness = await createHarness({ bus, extensions: [testExtension] });
 
   expect(harness.registry.has("custom_tool")).toBe(true);
-  expect(harness.registry.definitions.length).toBe(5);
+  expect(harness.registry.definitions.length).toBe(7);
 
   await harness.destroy();
 });
